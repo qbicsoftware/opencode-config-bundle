@@ -1,0 +1,37 @@
+{
+  "manifest_version": 1,
+  "bundle_name": "qbic-opencode-config-bundle",
+  "bundle_version": "v1.0.0",
+  "presets": [
+    {
+      "name": "openai",
+      "description": "OpenAI-based multi-tier agent configuration with planning-first workflow",
+      "entrypoint": "opencode.openai.json",
+      "prompt_files": []
+    },
+    {
+      "name": "mixed",
+      "description": "Mixed model stack (Claude for routing/planning/review, Codex for execution)",
+      "entrypoint": "opencode.mixed.json",
+      "prompt_files": []
+    },
+    {
+      "name": "kimi",
+      "description": "Kimi-based multi-tier agent configuration",
+      "entrypoint": "opencode.kimi.json",
+      "prompt_files": []
+    },
+    {
+      "name": "big-pickle",
+      "description": "Big Pickle model-based multi-tier agent configuration",
+      "entrypoint": "opencode.big-pickle.json",
+      "prompt_files": []
+    },
+    {
+      "name": "minimax",
+      "description": "MiniMax-based multi-tier agent configuration",
+      "entrypoint": "opencode.minimax.json",
+      "prompt_files": []
+    }
+  ]
+}
