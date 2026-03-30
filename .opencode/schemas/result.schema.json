@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": ".opencode/schemas/result.schema.json",
+  "title": "OpenCode Agent Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "result_type",
+    "agent",
+    "source_handoff_id",
+    "created_at",
+    "status"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "result_type": {
+      "type": "string",
+      "enum": [
+        "implementation_summary",
+        "review_result",
+        "docs_result",
+        "blocked"
+      ]
+    },
+    "agent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_handoff_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Use a simple ISO 8601 UTC timestamp like 2026-03-16T18:31:00Z"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "approve",
+        "needs_changes",
+        "done",
+        "blocked"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "files_changed": {
+      "$ref": "#/$defs/stringList"
+    },
+    "files_intentionally_not_changed": {
+      "$ref": "#/$defs/stringList"
+    },
+    "tests_run": {
+      "$ref": "#/$defs/stringList"
+    },
+    "known_risks_or_limitations": {
+      "$ref": "#/$defs/stringList"
+    },
+    "review_focus": {
+      "$ref": "#/$defs/stringList"
+    },
+    "plan_steps_completed": {
+      "$ref": "#/$defs/stringList"
+    },
+    "deviations_from_plan": {
+      "$ref": "#/$defs/stringList"
+    },
+    "symbols_changed": {
+      "$ref": "#/$defs/stringList"
+    },
+    "verification_results": {
+      "$ref": "#/$defs/stringList"
+    },
+    "remaining_followups": {
+      "$ref": "#/$defs/stringList"
+    },
+    "findings": {
+      "$ref": "#/$defs/stringList"
+    },
+    "checks_performed": {
+      "$ref": "#/$defs/stringList"
+    },
+    "recommended_next_step": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "needs": {
+      "$ref": "#/$defs/stringList"
+    },
+    "suggested_next_agent": {
+      "type": "string"
+    },
+    "blocked_step": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result_type": {
+            "const": "implementation_summary"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "summary",
+          "files_changed",
+          "files_intentionally_not_changed",
+          "tests_run",
+          "known_risks_or_limitations",
+          "review_focus",
+          "plan_steps_completed",
+          "deviations_from_plan",
+          "symbols_changed",
+          "verification_results",
+          "remaining_followups"
+        ],
+        "properties": {
+          "status": {
+            "const": "done"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_type": {
+            "const": "review_result"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "summary",
+          "findings",
+          "checks_performed",
+          "recommended_next_step"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "approve",
+              "needs_changes"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_type": {
+            "const": "docs_result"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "summary",
+          "files_changed",
+          "files_intentionally_not_changed",
+          "tests_run",
+          "known_risks_or_limitations"
+        ],
+        "properties": {
+          "status": {
+            "const": "done"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result_type": {
+            "const": "blocked"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "reason",
+          "needs",
+          "suggested_next_agent",
+          "blocked_step"
+        ],
+        "properties": {
+          "status": {
+            "const": "blocked"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}
