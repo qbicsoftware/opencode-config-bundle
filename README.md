@@ -6,76 +6,31 @@ A collection of OpenCode AI agent configuration presets with planning-first mult
 
 This bundle provides drop-in OpenCode agent configurations that route work through schema-validated JSON handoff artifacts before planning, execution, and review. The goal is fewer ambiguous changes, less rework, and tighter safety boundaries with a small, explicit contract between agents.
 
-## Versioning & Stability
+## Contract Ownership
 
-This bundle follows its own versioning scheme (`bundle_version` in the manifest), independent of the opencode-helper CLI version. This is intentional:
+This bundle **implements** the V2 bundle contract defined by the [opencode-agents](https://github.com/sven1103-agent/opencode-agents) repository. The contract schema and specification are maintained in the CLI repository.
 
-- **Ecosystem Stability**: Configuration bundles are foundational contracts that other tools and workflows depend on. Changes to the bundle should be rare and deliberate.
-- **Semantic Versioning**: Follows semver (e.g., `v1.0.0`, `v1.1.0`, `v2.0.0`) to communicate change impact.
-- **Backward Compatibility**: Minor and patch updates within a major version must not break existing configurations.
-- **Schema Stability**: The bundle manifest schema (see below) is contractually stable. Once published, a manifest version `1` will never change breakingly.
+For the full contract specification, see [Bundle Manifest Reference](https://github.com/sven1103-agent/opencode-agents/blob/main/docs/opencode-helper-cli.md#bundle-manifest-reference) in the opencode-agents documentation.
 
-## Bundle Contract (V2)
+## Versioning
 
-The V2 bundle manifest is the contract between the bundle and the opencode-helper CLI. This contract is:
+This bundle follows its own versioning scheme (`bundle_version` in the manifest), independent of the opencode-helper CLI version:
 
-- **Published**: Included in the CLI's schema validation
-- **Versioned**: The `manifest_version` field ensures forward compatibility
-- **Minimal**: Only contains what's needed for the CLI to discover and apply presets
+- **Semantic Versioning**: Follows semver (e.g., `v1.0.0`, `v1.1.0`, `v2.0.0`)
+- **Contract Compliance**: Each bundle version declares which `manifest_version` it complies with
 
-### Manifest Schema
-
-```json
-{
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type": "object",
-  "required": ["manifest_version", "bundle_name", "bundle_version", "presets"],
-  "properties": {
-    "manifest_version": { "type": "integer", "const": 1 },
-    "bundle_name": { "type": "string" },
-    "bundle_version": { "type": "string" },
-    "source_repo": { "type": "string" },
-    "source_commit": { "type": "string" },
-    "release_tag": { "type": "string" },
-    "presets": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": ["name", "description", "entrypoint"],
-        "properties": {
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "entrypoint": { "type": "string" },
-          "prompt_files": { "type": "array", "items": { "type": "string" } }
-        }
-      }
-    }
-  }
-}
-```
-
-### Required Files
+## Required Files
 
 A valid V2 bundle must include:
 
 ```
 <bundle-root>/
-  opencode-bundle.manifest.json  <- required for V2
-  <preset-entrypoint>.json       <- each preset file
+  opencode-bundle.manifest.json  <- contract compliance marker
+  <preset-entrypoint>.json       <- preset configurations
   .opencode/schemas/
-    handoff.schema.json          <- canonical handoff contract
-    result.schema.json           <- canonical result contract
+    handoff.schema.json          <- from CLI contract
+    result.schema.json           <- from CLI contract
 ```
-
-## Ecosystem Role
-
-This bundle serves as a foundational component of the OpenCode ecosystem:
-
-1. **Contract Provider**: Exports the canonical V2 bundle manifest schema used by the CLI
-2. **Schema Publisher**: Includes `handoff.schema.json` and `result.schema.json` that define inter-agent contracts
-3. **Preset Repository**: Maintains multiple model-specific configurations in a single, versioned bundle
-
-> **Important**: Because other tools depend on this bundle's contracts, changes should follow semver strictly. The manifest schema (`manifest_version: 1`) is locked and will never break backward compatibility.
 
 ## Bundle Contents
 
@@ -87,13 +42,6 @@ This bundle serves as a foundational component of the OpenCode ecosystem:
 | `big-pickle` | Big Pickle model-based configuration |
 | `minimax` | MiniMax-based configuration |
 
-## Schema Files
-
-The bundle includes the canonical artifact schemas used by all configurations:
-
-- `.opencode/schemas/handoff.schema.json` - Handoff artifact contract
-- `.opencode/schemas/result.schema.json` - Result artifact contract
-
 ## Usage with opencode-helper
 
 Register this bundle as a config source:
@@ -102,7 +50,7 @@ Register this bundle as a config source:
 opencode-helper source add qbicsoftware/opencode-config-bundle --name qbic
 ```
 
-List available presets:
+Apply a preset to your project:
 
 ```bash
 opencode-helper bundle apply qbic --preset openai --project-root ./myproject
