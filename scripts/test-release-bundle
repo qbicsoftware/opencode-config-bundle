@@ -1,0 +1,78 @@
+#!/bin/sh
+
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd "$(dirname "$0")" && pwd)
+REPO_ROOT=$(CDPATH= cd "$SCRIPT_DIR/.." && pwd)
+BUILD_SCRIPT="$REPO_ROOT/scripts/release/build-bundle-release.sh"
+
+sha256_file() {
+  file=$1
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+  else
+    shasum -a 256 "$file" | awk '{print $1}'
+  fi
+}
+
+assert_file() {
+  [ -f "$1" ] || {
+    printf 'missing expected file: %s\n' "$1" >&2
+    exit 1
+  }
+}
+
+assert_contains_line() {
+  file=$1
+  expected=$2
+  grep -Fqx "$expected" "$file" || {
+    printf 'expected line not found in %s: %s\n' "$file" "$expected" >&2
+    exit 1
+  }
+}
+
+TMP_DIR=$(mktemp -d "${TMPDIR:-/tmp}/opencode-config-bundle-test.XXXXXX")
+trap 'rm -rf "$TMP_DIR"' EXIT INT TERM
+
+TAG=1.2.3-test
+OUT1="$TMP_DIR/out1"
+OUT2="$TMP_DIR/out2"
+mkdir -p "$OUT1" "$OUT2"
+
+BUILD_OUTPUT1=$(sh "$BUILD_SCRIPT" --tag "$TAG" --output-dir "$OUT1")
+BUILD_OUTPUT2=$(sh "$BUILD_SCRIPT" --tag "$TAG" --output-dir "$OUT2")
+
+ARCHIVE=$(printf '%s\n' "$BUILD_OUTPUT1" | sed -n '1p')
+CHECKSUMS=$(printf '%s\n' "$BUILD_OUTPUT1" | sed -n '2p')
+BUNDLE_ROOT="opencode-config-bundle-$TAG"
+
+assert_file "$ARCHIVE"
+assert_file "$CHECKSUMS"
+
+ARCHIVE_SHA=$(sha256_file "$ARCHIVE")
+assert_contains_line "$CHECKSUMS" "$ARCHIVE_SHA  $BUNDLE_ROOT.tar.gz"
+
+tar -tzf "$ARCHIVE" > "$TMP_DIR/tar-contents.txt"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode-bundle.manifest.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode.openai.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode.mixed.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode.big-pickle.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode.minimax.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/opencode.kimi.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/.opencode/schemas/handoff.schema.json"
+assert_contains_line "$TMP_DIR/tar-contents.txt" "$BUNDLE_ROOT/.opencode/schemas/result.schema.json"
+
+tar -xzf "$ARCHIVE" -C "$TMP_DIR"
+grep -Fq '"manifest_version": "1.0.0"' "$TMP_DIR/$BUNDLE_ROOT/opencode-bundle.manifest.json"
+grep -Fq '"bundle_version": "'$TAG'"' "$TMP_DIR/$BUNDLE_ROOT/opencode-bundle.manifest.json"
+grep -Fq '"release_tag": "'$TAG'"' "$TMP_DIR/$BUNDLE_ROOT/opencode-bundle.manifest.json"
+
+SHA1=$(sha256_file "$OUT1/$BUNDLE_ROOT.tar.gz")
+SHA2=$(sha256_file "$OUT2/$BUNDLE_ROOT.tar.gz")
+[ "$SHA1" = "$SHA2" ] || {
+  printf 'tarball is not deterministic for same inputs\n' >&2
+  exit 1
+}
+
+printf 'ok: release bundle packaging test passed\n'

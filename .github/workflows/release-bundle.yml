@@ -1,0 +1,29 @@
+name: Release Bundle
+
+on:
+  release:
+    types:
+      - published
+
+permissions:
+  contents: write
+
+jobs:
+  upload-bundle-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build release bundle assets
+        run: |
+          set -eu
+          sh scripts/release/build-bundle-release.sh --tag "${GITHUB_REF_NAME}" --output-dir dist
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            dist/opencode-config-bundle-${{ github.ref_name }}.tar.gz
+            dist/opencode-config-bundle-${{ github.ref_name }}-checksums.txt

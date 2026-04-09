@@ -8,9 +8,9 @@ This bundle provides drop-in OpenCode agent configurations that route work throu
 
 ## Contract Ownership
 
-This bundle **implements** the V2 bundle contract defined by the [opencode-agents](https://github.com/sven1103-agent/opencode-agents) repository. The contract schema and specification are maintained in the CLI repository.
+This bundle consumes the bundle contract defined by the [opencode-config-cli](https://github.com/sven1103-agent/opencode-config-cli) repository. The CLI owns the manifest schema, validation rules, and GitHub release distribution contract.
 
-For the full contract specification, see [Bundle Manifest Reference](https://github.com/sven1103-agent/opencode-agents/blob/main/docs/opencode-helper-cli.md#bundle-manifest-reference) in the opencode-agents documentation.
+For the full contract specification, see [Bundle Contract](https://github.com/sven1103-agent/opencode-config-cli/blob/main/docs/specs/bundle-contract.md).
 
 ## Versioning
 
@@ -47,14 +47,21 @@ A valid V2 bundle must include:
 Register this bundle as a config source:
 
 ```bash
-opencode-helper source add qbicsoftware/opencode-config-bundle --name qbic
+oc source add qbicsoftware/opencode-config-bundle --name qbic
 ```
 
-Apply a preset to your project:
+Apply a prerelease preset to your project:
 
 ```bash
-opencode-helper bundle apply qbic --preset openai --project-root ./myproject
+oc bundle apply qbic --version 1.0.0-alpha.1 --preset openai --project-root ./myproject
 ```
+
+The repository publishes release bundle assets during GitHub release publication. Each release uploads:
+
+- `opencode-config-bundle-<tag>.tar.gz`
+- `opencode-config-bundle-<tag>-checksums.txt`
+
+These explicit assets are the supported distribution format for GitHub-release bundle sources. Do not rely on GitHub's auto-generated source archives for `oc` bundle resolution.
 
 ## Design Philosophy
 
