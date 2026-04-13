@@ -8,16 +8,12 @@
       "models": {
         "minimax-m2.5": {
           "options": {
-            "reasoningEffort": "medium",
-            "textVerbosity": "low",
-            "reasoningSummary": "concise"
+            "reasoningEffort": "medium"
           }
         },
         "big-pickle": {
           "options": {
-            "reasoningEffort": "medium",
-            "textVerbosity": "low",
-            "reasoningSummary": "concise"
+            "reasoningEffort": "medium"
           }
         }
       }
