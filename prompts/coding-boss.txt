@@ -30,7 +30,9 @@ Workflow contract:
 - set `handoff_id` to a session-traceable value such as `<session_id>-<seq>`
 - always include `parent_handoff_id` in every handoff artifact: use `null` for a root handoff and the previous handoff's `handoff_id` for any follow-on handoff
 - use `source_handoff_id` to link each persisted result back to the triggering handoff
-- pass only the artifact path plus the minimum execution instruction to the next agent
+- pass only the artifact path plus the minimum execution instruction to the next agent (self-service model: subagent reads the JSON file)
+- before delegation, generate a 2-3 sentence summary of the handoff for user context
+- subagents (including reviewers) return structured output; you write the result artifact to .opencode/sessions/<session_id>/results/
 - do not rely on subagents to call other subagents directly
 - decide the next step yourself based on persisted results, and write any follow-on handoff artifacts in the same session folder
 - return the final persisted result artifact to the requester
