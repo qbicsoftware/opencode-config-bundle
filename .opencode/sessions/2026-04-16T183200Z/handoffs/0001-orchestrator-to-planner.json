@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "kind": "implementation_plan",
+  "handoff_id": "2026-04-16T183200Z-0001",
+  "parent_handoff_id": null,
+  "from_agent": "orchestrator",
+  "to_agent": "planner",
+  "created_at": "2026-04-16T18:32:00Z",
+  "status": "pending",
+  "payload": {
+    "goal": "Implement three workflow improvements for multi-tier agent system: (1) file-based handover with self-service JSON reading, (2) UX visibility via summaries/status updates, (3) AGENT.md prerequisite parsing and enforcement",
+    "why": "Current system has unclear handover flow, hidden JSON for users, and orchestrator ignores AGENT.md prerequisites like worktree creation",
+    "files_to_modify": [
+      "prompts/coding-boss.txt",
+      "prompts/docs.txt"
+    ],
+    "files_to_inspect_only": [
+      ".opencode/schemas/handoff.schema.json",
+      ".opencode/schemas/result.schema.json"
+    ],
+    "do_not_modify": [
+      "*.json schema files (unless adding user_summary field)"
+    ],
+    "inputs_already_verified": [
+      "opencode.json agent definitions",
+      "handoff.schema.json structure",
+      "result.schema.json structure"
+    ],
+    "changes": [
+      "Update orchestrator prompts to write handoffs to .opencode/sessions/<id>/handoffs/<seq>.json",
+      "Pass only file path to subagent instead of inline JSON",
+      "Add summary generation for user-facing status updates",
+      "Add AGENT.md prerequisite parser: find '## Prerequisites' section, execute bash commands",
+      "Add status updates at phase boundaries (routing, planning, execution, review, recording)"
+    ],
+    "tests": [
+      "Verify handoff JSON is written to correct path",
+      "Verify subagent can read and use handoff file",
+      "Verify summary is displayed to user",
+      "Verify worktree prerequisite is executed before delegation"
+    ],
+    "done_when": [
+      "Orchestrator writes handoff JSON to sessions/<id>/handoffs/",
+      "Orchestrator passes only file path to subagent",
+      "User sees summary/status at each phase",
+      "AGENT.md prerequisites are executed before subagent is called"
+    ],
+    "abort_if": [
+      "Schema validation fails on handoff or result files",
+      "Subagent cannot read handoff file",
+      "Worktree creation fails when prerequisite specified"
+    ],
+    "architecture_decisions": [
+      "File-path self-service model: subagent reads JSON from file path, not inline",
+      "AGENT.md as source of truth: orchestrator parses and executes, not hardcoded",
+      "Summary-first UX: user sees summary, JSON stays hidden for audit"
+    ],
+    "target_symbols_or_sections": [
+      "prompts/coding-boss.txt",
+      "prompts/docs.txt"
+    ],
+    "execution_order": [
+      "1. Update coding-boss.txt with handoff writer",
+      "2. Update docs.txt with handoff writer",
+      "3. Add prerequisite parser to both",
+      "4. Add status update hooks"
+    ],
+    "interfaces_or_contracts_affected": [
+      "Handoff file format (.opencode/sessions/<id>/handoffs/*.json)",
+      "Result file format (.opencode/sessions/<id>/results/*.json)"
+    ],
+    "edge_cases_or_failure_paths": [
+      "AGENT.md missing: fallback to no prerequisites",
+      "Invalid JSON in handoff: fail before delegation",
+      "Worktree already exists: skip or warn"
+    ],
+    "out_of_scope": [
+      "New CLI commands for status display",
+      "Schema changes to add user_summary field",
+      "Workflow YAML files (externalized to AGENT.md)"
+    ],
+    "verification_expectations": [
+      "Handoff files conform to schema",
+      "Subagent receives correct file path",
+      "Prerequisites from AGENT.md are executed",
+      "User sees phase transitions"
+    ],
+    "examples": [
+      "Orchestrator: 'Read handoff from .opencode/sessions/.../handoffs/0001.json'",
+      "AGENT.md: '## Prerequisites\n```bash\ngit worktree add -b feature/123 ../feature-123\n```'"
+    ],
+    "review_focus": [
+      "Is the file-path self-service model clear?",
+      "Is AGENT.md parsing robust enough?",
+      "Are status updates visible but not verbose?"
+    ],
+    "known_risks_or_limitations": [
+      "AGENT.md format must be standardized for parsing to work",
+      "No validation that subagent actually reads the file",
+      "Status updates depend on orchestrator prompt compliance"
+    ]
+  }
+}

@@ -92,16 +92,16 @@ cat > "$STAGE_ROOT/opencode-bundle.manifest.json" <<EOF
       "description": "OpenAI-based multi-tier agent configuration with planning-first workflow",
       "entrypoint": "opencode.openai.json",
       "prompt_files": [
-        "prompts/agent-architect.txt",
-        "prompts/code-reviewer.txt",
         "prompts/coding-boss.txt",
-        "prompts/docs-planner.txt",
-        "prompts/docs-reviewer.txt",
-        "prompts/docs-writer-fast.txt",
-        "prompts/docs.txt",
+        "prompts/planner.txt",
         "prompts/implementer-small.txt",
         "prompts/implementer.txt",
-        "prompts/planner.txt"
+        "prompts/code-reviewer.txt",
+        "prompts/docs.txt",
+        "prompts/docs-planner.txt",
+        "prompts/docs-writer-fast.txt",
+        "prompts/docs-reviewer.txt",
+        "prompts/agent-architect.txt"
       ]
     },
     {
@@ -109,16 +109,16 @@ cat > "$STAGE_ROOT/opencode-bundle.manifest.json" <<EOF
       "description": "Mixed model stack (Claude for routing/planning/review, Codex for execution)",
       "entrypoint": "opencode.mixed.json",
       "prompt_files": [
-        "prompts/agent-architect.txt",
-        "prompts/code-reviewer.txt",
         "prompts/coding-boss.txt",
-        "prompts/docs-planner.txt",
-        "prompts/docs-reviewer.txt",
-        "prompts/docs-writer-fast.txt",
-        "prompts/docs.txt",
+        "prompts/planner.txt",
         "prompts/implementer-small.txt",
         "prompts/implementer.txt",
-        "prompts/planner.txt"
+        "prompts/code-reviewer.txt",
+        "prompts/docs.txt",
+        "prompts/docs-planner.txt",
+        "prompts/docs-writer-fast.txt",
+        "prompts/docs-reviewer.txt",
+        "prompts/agent-architect.txt"
       ]
     },
     {
@@ -126,16 +126,16 @@ cat > "$STAGE_ROOT/opencode-bundle.manifest.json" <<EOF
       "description": "Kimi-based multi-tier agent configuration",
       "entrypoint": "opencode.kimi.json",
       "prompt_files": [
-        "prompts/agent-architect.txt",
-        "prompts/code-reviewer.txt",
         "prompts/coding-boss.txt",
-        "prompts/docs-planner.txt",
-        "prompts/docs-reviewer.txt",
-        "prompts/docs-writer-fast.txt",
-        "prompts/docs.txt",
+        "prompts/planner.txt",
         "prompts/implementer-small.txt",
         "prompts/implementer.txt",
-        "prompts/planner.txt"
+        "prompts/code-reviewer.txt",
+        "prompts/docs.txt",
+        "prompts/docs-planner.txt",
+        "prompts/docs-writer-fast.txt",
+        "prompts/docs-reviewer.txt",
+        "prompts/agent-architect.txt"
       ]
     },
     {
@@ -143,16 +143,16 @@ cat > "$STAGE_ROOT/opencode-bundle.manifest.json" <<EOF
       "description": "Big Pickle model-based multi-tier agent configuration",
       "entrypoint": "opencode.big-pickle.json",
       "prompt_files": [
-        "prompts/agent-architect.txt",
-        "prompts/code-reviewer.txt",
         "prompts/coding-boss.txt",
-        "prompts/docs-planner.txt",
-        "prompts/docs-reviewer.txt",
-        "prompts/docs-writer-fast.txt",
-        "prompts/docs.txt",
+        "prompts/planner.txt",
         "prompts/implementer-small.txt",
         "prompts/implementer.txt",
-        "prompts/planner.txt"
+        "prompts/code-reviewer.txt",
+        "prompts/docs.txt",
+        "prompts/docs-planner.txt",
+        "prompts/docs-writer-fast.txt",
+        "prompts/docs-reviewer.txt",
+        "prompts/agent-architect.txt"
       ]
     },
     {
@@ -160,16 +160,16 @@ cat > "$STAGE_ROOT/opencode-bundle.manifest.json" <<EOF
       "description": "MiniMax-based multi-tier agent configuration",
       "entrypoint": "opencode.minimax.json",
       "prompt_files": [
-        "prompts/agent-architect.txt",
-        "prompts/code-reviewer.txt",
         "prompts/coding-boss.txt",
-        "prompts/docs-planner.txt",
-        "prompts/docs-reviewer.txt",
-        "prompts/docs-writer-fast.txt",
-        "prompts/docs.txt",
+        "prompts/planner.txt",
         "prompts/implementer-small.txt",
         "prompts/implementer.txt",
-        "prompts/planner.txt"
+        "prompts/code-reviewer.txt",
+        "prompts/docs.txt",
+        "prompts/docs-planner.txt",
+        "prompts/docs-writer-fast.txt",
+        "prompts/docs-reviewer.txt",
+        "prompts/agent-architect.txt"
       ]
     }
   ]

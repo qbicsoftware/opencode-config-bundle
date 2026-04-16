@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "result_type": "implementation_summary",
+  "agent": "writer",
+  "source_handoff_id": "2026-04-16T183200Z-0002",
+  "created_at": "2026-04-16T18:50:00Z",
+  "status": "done",
+  "summary": "Updated both orchestrator prompts (coding-boss.txt, docs.txt) with two improvements: (1) self-service file-path model for handoffs (subagent reads JSON file), (2) summary generation before delegation. AGENT.md is treated as a black box - the agent software already loads it into context, so no structural parsing needed. The orchestrator delegates and follows whatever rules AGENT.md specifies.",
+  "files_changed": [
+    "prompts/coding-boss.txt",
+    "prompts/docs.txt"
+  ],
+  "files_intentionally_not_changed": [],
+  "tests_run": [],
+  "known_risks_or_limitations": [
+    "No validation that subagent actually reads the handoff file",
+    "AGENT.md prerequisites handled by agent software, not orchestrator"
+  ],
+  "review_focus": [
+    "Is the self-service model clear?",
+    "Are status updates visible but not verbose?"
+  ],
+  "plan_steps_completed": [
+    "Added self-service model: 'pass only the artifact path... (self-service model: subagent reads the JSON file)'",
+    "Added summary generation: 'before delegation, generate a 2-3 sentence summary of the handoff for user context'",
+    "Removed hardcoded AGENT.md parsing - treated as black box, agent software loads it"
+  ],
+  "deviations_from_plan": [
+    "Removed AGENT.md prerequisite enforcement section - it created unwanted coupling to AGENT.md structure"
+  ],
+  "symbols_changed": [],
+  "verification_results": [
+    "Verify handoff JSON written to correct path",
+    "Verify subagent can read handoff file",
+    "Verify summary generated before delegation"
+  ],
+  "remaining_followups": [
+    "Test workflow end-to-end"
+  ]
+}
